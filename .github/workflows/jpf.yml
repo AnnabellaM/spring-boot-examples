@@ -30,11 +30,11 @@ jobs:
     - name: Compile Java sources
       run: |
         mkdir -p ./build
-        find ./ -name "*.java" | xargs javac -d ./build -cp /tmp/jpf-core/build/jpf-classes.jar --enable-preview --release ${{ matrix.java }}
+        find . -name "*.java" | xargs javac -d ./build -cp /tmp/jpf-core/build/jpf-classes.jar --enable-preview --release ${{ matrix.java }}
 
     - name: Generate and Run JPF Configs
       run: |
-        find ./ -name "*.java" | while read -r file; do
+        find . -name "*.java" | while read -r file; do
           # Extract package name from the Java file
           package=$(grep "^package " "$file" | awk '{print $2}' | sed 's/;$//')
           classname=$(basename "$file" .java)
@@ -50,7 +50,7 @@ jobs:
           # Create .jpf file
           echo "target=$fqcn" > $dir/$classname.jpf
           echo "classpath=./build" >> $dir/$classname.jpf
-          echo "sourcepath=./" >> $dir/$classname.jpf
+          echo "sourcepath=." >> $dir/$classname.jpf
           echo "vm.por=true" >> $dir/$classname.jpf
           echo "vm.version=${{ matrix.java }}" >> $dir/$classname.jpf
           echo "jvm.insn_factory.class=gov.nasa.jpf.jvm.bytecode.InstructionFactory" >> $dir/$classname.jpf
